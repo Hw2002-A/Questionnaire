@@ -1,0 +1,71 @@
+table {
+  width: 100%;
+}
+tr:nth-of-type(even) td{
+  background-color:#f3f3f3;
+}
+
+th{
+  font-size: 20px;
+  color: #333;
+  font-weight: 500;
+  margin-right: 8px; /* 和 input 保持間距 */
+}
+tr:hover td:first-child{
+  color:#3C8692;
+  border-left:30px solid #3C8692;
+  transition: all 0.3s ease-in-out;
+}
+.h3Css{
+  color: aqua;
+}
+.diva{
+  display: flex;
+  justify-content: center;
+  background-image: linear-gradient(to left, #3C8692, #F8FBFD);
+  color: #F8FBFD;
+}
+.divb{
+  padding:10px 300px 10px;
+}
+.divStyle4 {
+  display: flex;
+  justify-content: center;
+  background: #F8FBFD;
+  border: 1px solid #3C8692; /* 和 navbar 呼應 */
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 4px 10px rgba(60, 134, 146, 0.2); /* 陰影帶藍色調 */
+  color: #333; /* 文字深灰 */
+}
+input, select {
+  font-size: 14px;
+  height: 30px;
+  padding: 6px 12px;
+  border: 1px solid #3C8692;
+  border-radius: 6px;
+  margin: 0 2px 0;
+}
+label {
+  font-size: 20px;
+  color: #333;
+  font-weight: 500;
+  margin-right: 8px; /* 和 input 保持間距 */
+}
+
+.btnStyle {
+  background: #3C8692;
+  color: #F8FBFD;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  background: #2C6A75; /* hover 深一點 */
+}

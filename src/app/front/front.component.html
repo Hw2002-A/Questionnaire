@@ -1,0 +1,30 @@
+<h1>{{quest.title}}</h1>
+<label>{{quest.sDate}}到{{quest.eDate}}</label>
+<h2>範例說明: {{quest.explain}}</h2>
+
+@for(answer of newquesArray ; track $index){
+
+     <p>{{answer.questId}}.{{answer.questName}}</p>
+      @if(answer.type == "M"){
+        @for(op of answer.options ; track $index){
+          <input type="radio" name="{{answer.questId}}" value="{{op.code}}" ([ngModel]) = "answer.radioAnswer">
+          <label>{{op.optionName}}</label>
+        }
+      }
+      @if(answer.type == "Q"){
+         @for(op of answer.options ; track $index){
+          <input type="checkbox">
+          <label>{{op.optionName}}</label>
+        }
+      }
+        @if (answer.type === "T"){
+          <label>
+            <textarea></textarea>
+          </label>
+        }
+
+
+
+  }
+
+
