@@ -1,0 +1,23 @@
+<div class="login-box">
+  <p>問卷登入</p>
+  <form>
+    <div class="user-box">
+      <input required="" name="" type="text">
+      <label>電子郵件</label>
+    </div>
+    <div class="user-box">
+      <input required="" name="" type="password">
+      <label>密碼</label>
+    </div>
+    <a routerLink="/list">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      確認
+    </a>
+  </form>
+  @if(!adminLogin){
+  <p>沒有帳號嗎?前往<a routerLink="/signup" class="a2">註冊</a></p>
+  }
+</div>

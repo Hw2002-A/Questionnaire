@@ -1,0 +1,83 @@
+.divStyle{
+  position: absolute;
+  left: 33%;
+  top:10%;
+  box-shadow: 0 4px 10px rgba(60, 134, 146, 0.2);
+  border: 2px solid #1e5f8a; /* 和 navbar 呼應 */
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  width: 33%;
+  background-color: #F8FBFD;
+  min-height: 600px;
+}
+.divName{
+  margin: 20px;
+  padding-bottom: 20px;
+}
+.divContent{
+  margin-top: 100px;
+  margin-left: 60px;
+}
+
+::ng-deep .mat-mdc-tab-header {
+  background-image: linear-gradient(to right, #1E3A8A);
+  box-shadow: 0 4px 10px #232324;
+  border-radius: 10px;
+}
+::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+  color: #F8FBFD !important;
+  font-size: 20px;
+}
+::ng-deep .mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border-color: #ffda1a !important; /* 想要的顏色 */
+}
+
+/* 選中 tab 文字顏色 */
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #ffda1a !important; /* 深藍色 */
+  font-weight: 600;
+}
+
+/* hover 狀態文字顏色 */
+::ng-deep .mat-mdc-tab:hover .mdc-tab__text-label {
+  color: #000000 !important; /* 亮藍色 */
+}
+::ng-deep .mat-mdc-tab:hover {
+  background-color: #E0E7FF !important; /* 淺藍背景 */
+  border-radius: 6px 6px 0 0;          /* 圓角，看起來更柔和 */
+}
+label {
+  font-size: 20px;
+  color: #333132;
+}
+
+/* 輸入欄位區 */
+label {
+  margin: 10px;
+  font-weight: bold;
+  margin-right: 5px;
+  vertical-align: top; /* 跟 textarea 上端對齊 */
+}
+textarea{
+  height: 100px;
+  width: 250px;
+  vertical-align: top;
+}
+input[type="text"] {
+  width: 250px;
+  padding: 6px 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border 0.2s;
+}
+
+input[type="text"]:focus, textarea:focus {
+  border-color: #3498db;
+  outline: none;
+}
+.quesbtn{
+  margin-left: 20px;
+  margin-top: 10px;
+}

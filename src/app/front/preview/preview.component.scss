@@ -1,13 +1,8 @@
-/* 整體版面 */
-// div {
-//   margin: 10px 0;
-//   font-family: "Microsoft JhengHei", Arial, sans-serif;
-//   text-align: center;
-//   background-color: white;
-// }
+
 .divA{
   position: absolute;
   left: 34%;
+  margin: 5px;
   background-color: white;
   width: 600px;
   box-shadow: 0 4px 10px rgba(60, 134, 146, 0.2); /* 陰影帶藍色調 */
@@ -34,6 +29,8 @@ label {
   color: #333132;
 }
 
+
+
 /* 輸入欄位區 */
 label {
   margin: 10px 0;
@@ -42,21 +39,9 @@ label {
   margin-right: 5px;
 }
 
-input[type="text"] {
-  width: 250px;
-  padding: 6px 10px;
-  border: 1px solid #bdc3c7;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border 0.2s;
-}
-
-input[type="text"]:focus, textarea:focus {
-  border-color: #3498db;
-  outline: none;
-}
 
 /* 問題清單 */
+
 
 li {
   margin-bottom: 15px;
@@ -71,4 +56,5 @@ h3 span {
   margin-left: 4px;
   font-weight: bold;
 }
+
 

@@ -1,0 +1,70 @@
+<div class="divStyle">
+<mat-tab-group [(selectedIndex)]="tabNumber">
+  <mat-tab label="問卷">
+  <div class="divContent" >
+ <div class="divName" >
+  <label>問卷名稱:</label>
+  <input type="text" [(ngModel)]="questName">
+  </div>
+ <div class="divName" >
+  <label>問卷說明:</label>
+  <textarea [(ngModel)]="questExplan"></textarea>
+</div>
+ <div class="divName" >
+  <label>開始時間:</label>
+  <input type="date" [(ngModel)]="chooseDate">
+</div>
+ <div class="divName" >
+  <label>結束時間:</label>
+  <input type="date" [(ngModel)]="endDate" min={{chooseDate}}>
+  </div>
+</div>
+<button (click)="nextTab()">下一步</button>
+  </mat-tab>
+
+  <mat-tab label="問卷題目">
+    <div class="divName">
+      <label>選擇問題類型</label>
+      <div>
+        <button class="quesbtn" (click)="addRow()">單選</button>
+        <button class="quesbtn">多選</button>
+        <button class="quesbtn">簡答題</button>
+        <button (click)="deleteSelected()">刪除</button>
+      </div>
+        <hr>
+    </div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="select">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)">
+      </mat-checkbox>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="questId">
+    <th mat-header-cell *matHeaderCellDef> 題號 </th>
+    <td mat-cell *matCellDef="let element"> {{element.questId}} </td>
+  </ng-container>
+  <ng-container matColumnDef="questName">
+    <th mat-header-cell *matHeaderCellDef> 題目 </th>
+    <td mat-cell *matCellDef="let element"> {{element.questName}} </td>
+  </ng-container>
+  <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef> 類型 </th>
+    <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+  </ng-container>
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element" (click) = "showDialog()"> {{element.edit}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+  </mat-tab>
+  <mat-tab label="問卷回饋"> 3 </mat-tab>
+   <mat-tab label="統計"> 4 </mat-tab>
+</mat-tab-group>
+</div>

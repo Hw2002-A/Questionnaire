@@ -1,0 +1,47 @@
+<div class="divA">
+<div class="divName">
+<h1>{{quest.title}}</h1>
+<hr>
+<div class="divName">
+<label>{{quest.sDate}}~{{quest.eDate}}</label>
+</div>
+<div>
+<h2>範例說明: {{quest.explain}}</h2>
+</div>
+
+<div class="divName">
+<label>姓名:{{quest.userName}}</label>
+</div>
+<div class="divName">
+<label>手機:{{quest.userPhone}}</label>
+</div>
+<div class="divName">
+<label>Email:{{quest.userEmail}}</label>
+</div>
+<div class="divName">
+<label>年齡:{{quest.userAge}}</label>
+</div>
+  <div>
+  <ol>
+@for(answer of newquesArray ; track $index){
+    <li>
+      <h3>
+     {{answer.questName}}
+        </h3>
+    </li>
+    @for(op of answer.options ; track $index){
+      @if(op.checkboolean){
+           <label> {{op.optionName}}</label>
+          }
+          @if(answer.radioAnswer == op.code){
+          <label>{{op.optionName}}</label>
+          }
+
+    }
+     @if (answer.type == 'T'){
+          <label>{{answer.Answer}}</label>
+        }
+  }
+ </ol>
+</div>
+</div>

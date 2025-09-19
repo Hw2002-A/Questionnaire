@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AnswerDataService } from '../@service/answer-data.service';
 
 
 @Component({
@@ -10,18 +11,17 @@ import { RouterLink } from '@angular/router';
   styleUrl: './front.component.scss'
 })
 export class FrontComponent {
+  constructor(private answerDataService:AnswerDataService,
+    private router:Router
+  ){}
   newquesArray:Array<any> = [];
-  opt:Array<any>=[];
   // 多選M 單選Q 文字輸入T
   quest = {
     id: 1,
     title: '範例問卷標題',
     sDate: '2024/11/06',
     eDate: '2024/12/23',
-    explain: '問卷說明問卷說明問卷說明問卷說明問卷說明問卷說明\
-              問卷說明問卷說明問卷說明問卷說明問卷說明問卷說明\
-              問卷說明問卷說明問卷說明問卷說明問卷說明問卷說明\
-              問卷說明問卷說明問卷說明問卷說明問卷說明問卷說明',
+    explain: '5555555555555555555',
     questArray: [
       {
         questId: 1,
@@ -76,22 +76,102 @@ export class FrontComponent {
       },
     ]
   }
-  ngOnInit(): void {
-    for(let ques of this.quest.questArray){
-      this.newquesArray.push({...ques, answer:'',radioAnswer:''});
-    }
-    console.log(this.newquesArray);
-    for(let opsArray of this.newquesArray){
+  title!:string;
+  sDate!:string;
+  eDate!:string;
+  explain!:string;
+  userName!:string;
+  userPhone!:string;
+  userEmail!:string;
+  userAge!:string;
 
-      for(let opt of opsArray.options){
-        this.opt.push({...opsArray,checkboolean:''});
-      }
+
+  ngOnInit(): void {
+    this.title = this.quest.title;
+    this.sDate = this.quest.sDate;
+    this.eDate = this.quest.eDate;
+    this.explain = this.quest.explain;
+
+    if(!this.answerDataService.questData){
+      this.tidArray();
+    }else{
+      this.title = this.answerDataService.questData.title;
+      this.sDate = this.answerDataService.questData.sDate;
+      this.eDate = this.answerDataService.questData.eDate;
+      this.explain = this.answerDataService.questData.explain;
+      this.userName = this.answerDataService.questData.userName;
+      this.userAge = this.answerDataService.questData.userAge;
+      this.userEmail = this.answerDataService.questData.userEmail;
+      this.userPhone = this.answerDataService.questData.userPhone;
+      this.newquesArray = this.answerDataService.questData.questArray;
     }
   }
 
     tidArray(){
-      
+      for(let ques of this.quest.questArray){
+      this.newquesArray.push({...ques, Answer:'',radioAnswer:''});
+      }
+    for(let opsArray of this.newquesArray){
+      let opts = [];
+      for(let opt of opsArray.options){
+        opts.push({...opt,checkboolean:false});
+      }
+      opsArray.options =opts;
+      }
+      console.log(this.newquesArray);
+
+     }
+    Preview(){
+      if(this.checkNeed()){
+    this.answerDataService.questData ={
+      title:this.quest.title,
+      sDate:this.quest.sDate,
+      eDate:this.quest.eDate,
+      explain:this.quest.explain,
+      userName:this.userName,
+      userAge:this.userAge,
+      userEmail:this.userEmail,
+      userPhone:this.userPhone,
+      questArray:this.newquesArray,
     }
+     console.log(this.answerDataService.questData);
+     this.router.navigate(['/preview']);
+    };
+
+    }
+     checkNeed():boolean{
+      if (!this.userName || !this.userPhone){
+        alert('請輸入完全')
+        return false;
+      };
+       for (let ques of this.newquesArray){
+        if(ques.need){
+          if (ques.type == 'M'){
+            let check = false;
+            for(let ops of ques.options){
+                if(ops.checkboolean){
+                  check = true;
+                }
+            }
+            if(!check){
+              alert('請輸入完全')
+              return false;
+            }
+          }else if(ques.type == 'Q'){
+            if(!ques.radioAnswer){
+              alert('請輸入完全')
+              return false;
+            }
+          }else if(ques.type == 'T'){
+            if(!ques.Answer){
+              alert('請輸入完全')
+              return false;
+            }
+          }
+        }
+       }
+       return true;
+     }
   }
 
 

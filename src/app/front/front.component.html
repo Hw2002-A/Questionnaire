@@ -1,30 +1,61 @@
+<div class="divA">
+<div class="divName">
 <h1>{{quest.title}}</h1>
-<label>{{quest.sDate}}到{{quest.eDate}}</label>
+<hr>
+<div class="divName">
+<label>{{quest.sDate}}~{{quest.eDate}}</label>
+</div>
+<div>
 <h2>範例說明: {{quest.explain}}</h2>
+</div>
 
+<div class="divName">
+<label>姓名:</label><input type="text" [(ngModel)]="userName">
+</div>
+<div class="divName">
+<label>手機:</label><input type="text" [(ngModel)]="userPhone">
+</div>
+<div class="divName">
+<label>Email:</label><input type="text" [(ngModel)]="userEmail">
+</div>
+<div class="divName">
+<label>年齡:</label><input type="text" [(ngModel)]="userAge">
+</div>
+<div>
+  <ol>
 @for(answer of newquesArray ; track $index){
-
-     <p>{{answer.questId}}.{{answer.questName}}</p>
+    <li>
+      <h3>
+     {{answer.questName}}
+     @if(answer.need){
+      <span style="color: brown;">*</span>
+     }
+        </h3>
+    </li>
       @if(answer.type == "M"){
         @for(op of answer.options ; track $index){
-          <input type="radio" name="{{answer.questId}}" value="{{op.code}}" ([ngModel]) = "answer.radioAnswer">
+          <input type="checkbox" [(ngModel)] = 'op.checkboolean'>
           <label>{{op.optionName}}</label>
+          <br>
         }
       }
       @if(answer.type == "Q"){
          @for(op of answer.options ; track $index){
-          <input type="checkbox">
+          <input type="radio" name="{{answer.questId}}" value="{{op.code}}" [(ngModel)] = "answer.radioAnswer">
           <label>{{op.optionName}}</label>
+          <br>
         }
       }
         @if (answer.type === "T"){
           <label>
-            <textarea></textarea>
+            <textarea [(ngModel)] = "answer.Answer"></textarea>
           </label>
+          <br>
         }
 
-
-
   }
-
+ </ol>
+</div>
+</div>
+<button (click)="Preview()">預覽</button>
 
