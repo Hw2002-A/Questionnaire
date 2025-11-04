@@ -2,14 +2,14 @@
   <p>問卷登入</p>
   <form>
     <div class="user-box">
-      <input required="" name="" type="text">
+      <input  name="acc" type="text" [(ngModel)]="acc">
       <label>電子郵件</label>
     </div>
     <div class="user-box">
-      <input required="" name="" type="password">
+      <input  name="pwd" type="text" [(ngModel)]="pwd">
       <label>密碼</label>
     </div>
-    <a routerLink="/list">
+    <a (click) = "loginclick()">
       <span></span>
       <span></span>
       <span></span>

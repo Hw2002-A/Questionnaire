@@ -2,18 +2,18 @@
   <p>註冊帳號</p>
   <form>
     <div class="user-box">
-      <input required="" name="" type="text">
+      <input name="userName" type="text"  [(ngModel)]="userName">
       <label>姓名</label>
     </div>
     <div class="user-box">
-      <input required="" name="" type="text">
+      <input  name="userAccount" type="text" [(ngModel)]="userAccount">
       <label>電子郵件</label>
     </div>
     <div class="user-box">
-      <input required="" name="" type="password">
+      <input  name="userPwd" type="text" [(ngModel)]="userPwd">
       <label>密碼</label>
     </div>
-    <a href="#">
+    <a (click) = "signUpClick()">
       <span></span>
       <span></span>
       <span></span>

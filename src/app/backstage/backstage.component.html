@@ -1,3 +1,4 @@
+<button routerLink = "/list">返回</button>
 <div class="divStyle">
 <mat-tab-group [(selectedIndex)]="tabNumber">
   <mat-tab label="問卷">
@@ -17,6 +18,11 @@
  <div class="divName" >
   <label>結束時間:</label>
   <input type="date" [(ngModel)]="endDate" min={{chooseDate}}>
+  </div>
+  <div class="divName" >
+  <label>是否發布</label>
+  <input type="radio" [value]="true" name="needRadio" [(ngModel)]="publish">是
+  <input type="radio" [value]="false" name="needRadio" [(ngModel)]="publish">否
   </div>
 </div>
 <button (click)="nextTab()">下一步</button>
@@ -60,10 +66,17 @@
     <td mat-cell *matCellDef="let element" (click) = "showDialog()"> {{element.edit}} </td>
   </ng-container>
 
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
 </table>
+<button class="quesbtn" (click)="submitAllQuestions()">上傳表單</button>
   </mat-tab>
+
+
+
+
   <mat-tab label="問卷回饋"> 3 </mat-tab>
    <mat-tab label="統計"> 4 </mat-tab>
 </mat-tab-group>

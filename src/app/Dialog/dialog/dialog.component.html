@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>標題</h2>
 <mat-dialog-content>
   <div>
-  <label>題號</label><input type = "text" [(ngModel)]="questId">
+  <label>題號</label><input type = "number" [(ngModel)]="questId">
   </div>
   <div>
   <label>題目</label><input type = "text" [(ngModel)]="questName">
@@ -9,7 +9,7 @@
   <div>
   <label>題目類型</label>
   <select [(ngModel)]="type">
-    <option value="Q">單選題</option>
+    <option value="S">單選題</option>
     <option value="M">多選題</option>
     <option value="T">簡答題</option>
   </select>
@@ -24,7 +24,7 @@
 </label>
   </div>
   <label>選項</label>
-  @if(type == 'Q'){
+  @if(type == 'S'){
     <div>
     <button (click)="addOption()">新增選項</button>
     <button (click)="saveOptions()">儲存</button>
