@@ -8,3 +8,35 @@ background-size: 35px 35px, 35px 35px, 7px 7px, 7px 7px;
 background-position: -1.4000000000000001px -1.4000000000000001px, -1.4000000000000001px -1.4000000000000001px, -0.7000000000000001px -0.7000000000000001px, -0.7000000000000001px -0.7000000000000001px;
 
 }
+
+
+
+.custom-dialog-container .mat-mdc-dialog-container {
+  border-radius: 16px !important;
+  padding: 0;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.mat-mdc-dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #c22222;
+  border-bottom: 1px solid #09d635;
+  padding: 16px 24px;
+}
+
+.mat-mdc-dialog-content {
+  padding: 20px 24px;
+}
+
+.mat-mdc-dialog-actions {
+  padding: 16px 24px;
+  background-color: #fafafa;
+}
+
+button[mat-raised-button] {
+  border-radius: 8px;
+  padding: 4px 20px;
+}

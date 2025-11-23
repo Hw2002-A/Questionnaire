@@ -81,3 +81,24 @@ input[type="text"]:focus, textarea:focus {
   margin-left: 20px;
   margin-top: 10px;
 }
+.round-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;          /* 圓形 */
+  background-color: transparent; /* 透明背景 */
+  border: transparent;      /* 淺灰邊框，可選 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #555;                  /* icon 顏色 */
+}
+
+.round-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* hover 時微灰背景 */
+  border-color: #888;
+}
+
+.round-btn:active {
+  transform: scale(0.95);       /* 點擊時輕微縮小 */
+}

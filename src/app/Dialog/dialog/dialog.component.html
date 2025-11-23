@@ -38,6 +38,23 @@
       }
     </div>
     }
+    @if(type == 'M'){
+    <div>
+    <button (click)="addOption()">新增選項</button>
+    <button (click)="saveOptions()">儲存</button>
+    </div>
+    <div>
+      @for (opt of options; track $index) {
+        <div>
+          選項 {{ opt.code }}:
+          <input [(ngModel)]="opt.optionName" placeholder="請輸入選項內容" />
+        </div>
+      }
+    </div>
+    }
+
+
+
 </mat-dialog-content>
 
 <mat-dialog-actions>

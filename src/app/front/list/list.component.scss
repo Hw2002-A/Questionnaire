@@ -69,3 +69,48 @@ label {
 button:hover {
   background: #2C6A75; /* hover 深一點 */
 }
+
+
+
+.clickable {
+  color: #1a73e8;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+/* 滑過時顯示手指 */
+.clickable:hover {
+  cursor: pointer;       /* 這行讓滑過變成手指 */
+  background-color: rgba(26,115,232,0.06);
+}
+/* 不可點的樣式 */
+.disabled {
+  color: #999;
+  text-decoration: none;
+}
+
+/* 不可點滑過顯示禁止符號（圈叉）*/
+.disabled:hover {
+  cursor: not-allowed;   /* 顯示不可點的游標 */
+  background-color: transparent;
+}
+.round-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;          /* 圓形 */
+  background-color: transparent; /* 透明背景 */
+  border: 1.5px solid #ccc;      /* 淺灰邊框，可選 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #555;                  /* icon 顏色 */
+}
+
+.round-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* hover 時微灰背景 */
+  border-color: #888;
+}
+
+.round-btn:active {
+  transform: scale(0.95);       /* 點擊時輕微縮小 */
+}

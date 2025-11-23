@@ -10,6 +10,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { HttpService } from '../../@http-service/http.service';
 import { QuizFromDb } from '../../@interface/interface.service';
+import { CommonModule } from '@angular/common';
 
 // ---------------- Component 設定區 ----------------
 @Component({
@@ -21,7 +22,8 @@ import { QuizFromDb } from '../../@interface/interface.service';
     MatTableModule,
     MatPaginatorModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    CommonModule
   ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
@@ -31,13 +33,13 @@ export class ListComponent {
   constructor(
     private answerDataService: AnswerDataService, // 問卷資料服務
     private router: Router, // Router 用來跳轉頁面
-    private http : HttpService
-  ) {}
+    private http: HttpService
+  ) { }
 
   // ---------------- 變數定義區 ----------------
   quizList: QuizFromDb[] = [];
   title = 'Questionnaire'; // 頁面標題
-  displayedColumns: string[] = ['select', 'id', 'title', 'publish', 'startDate', 'endDate','action']; // 表格欄位
+  displayedColumns: string[] = ['select', 'id', 'title', 'status', 'startDate', 'endDate', 'action']; // 表格欄位
   dataSource = new MatTableDataSource<QuizFromDb>(this.quizList); // 表格資料來源 (Material Table)
   @ViewChild(MatPaginator) paginator!: MatPaginator; // 分頁元件
 
@@ -48,27 +50,69 @@ export class ListComponent {
   endDate!: string; // 結束日期
   admincreate: boolean = false; // 是否為管理員模式
   selection: any; // 選取模型 (SelectionModel)
-
+  findData:any;
+  findQuestion:any;
   // ---------------- 生命週期鉤子 (LifeCycle Hook) ----------------
   ngAfterViewInit() {
-    // 初始化分頁器
     this.dataSource.paginator = this.paginator;
   }
 
   ngOnInit(): void {
+    if (this.answerDataService.isAdminLogin()) {
+      console.log('目前是管理員登入');
+      this.displayedColumns.push('publish');
+      this.http.getApi('http://localhost:8080/quiz/list').
+        subscribe((res: any) => {
+          this.quizList = res.quizList.map((quiz: any) => {
+            const now = new Date();
+            const start = new Date(quiz.startDate);
+            const end = new Date(quiz.endDate);
 
-    this.http.getApi('http://localhost:8080/quiz/list').
-    subscribe((res: any) =>{
-      this.quizList = res.quizList;
-      this.answerDataService.questData = res.quizList;
-      this.dataSource.data = this.quizList;
-      console.log(res.quizList);
+            // 判斷現在時間是否在區間內
+            let status: string;
+            if (now < start) {
+              status = '未開始';
+            } else if (now > end) {
+              status = '已截止';
+            } else {
+              status = '進行中';
+            }
+            return {
+              ...quiz,
+              status: status  // 新增 status 屬性
+            };
+          });
+          this.answerDataService.questData = res.quizList;
+          this.dataSource.data = this.quizList;
+        });
+      this.admincreate = this.answerDataService.adminLogin;
+    } else {
+      console.log('一般使用者');
+      this.http.getApi('http://localhost:8080/quiz/publish_list').
+        subscribe((res: any) => {
+          this.quizList = res.quizList.map((quiz: any) => {
+            const now = new Date();
+            const start = new Date(quiz.startDate);
+            const end = new Date(quiz.endDate);
 
-    });
-
-
-    // 判斷目前是否為管理員登入狀態
-    this.admincreate = this.answerDataService.adminLogin;
+            // 判斷現在時間是否在區間內
+            let status: string;
+            if (now < start) {
+              status = '未開始';
+            } else if (now > end) {
+              status = '已截止';
+            } else {
+              status = '進行中';
+            }
+            return {
+              ...quiz,
+              status: status  // 新增 status 屬性
+            };
+          });
+          this.answerDataService.questData = res.quizList;
+          this.dataSource.data = this.quizList;
+        });
+    }
 
     // 初始化選擇模型 (可多選)
     const initialSelection: Array<any> = [];
@@ -104,10 +148,14 @@ export class ListComponent {
 
   // 🔹 管理員登入事件：開啟登入頁面
   adminlogin() {
-    this.answerDataService.adminLogin = true;
     this.router.navigate(['/login']);
   }
 
+  adminlogout() {
+    this.answerDataService.setAdminLogin(false);
+    this.answerDataService.logout();
+    this.router.navigate(['/login']);
+  }
   // 🔹 上下排序按鈕：依 position 欄位切換排序方向
   powerDown() {
     if (this.upDown == false) {
@@ -142,31 +190,151 @@ export class ListComponent {
 
   /** 檢查是否全選 */
   isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected == numRows;
+    const unpublishedRows = this.dataSource.data.filter(d => !d.publish);
+    // const numRows = this.dataSource.data.length;
+    return unpublishedRows.length > 0 && unpublishedRows.every(row => this.selection.isSelected(row));
   }
 
   /** 若未全選 → 全選；若已全選 → 清空選取 */
   toggleAllRows() {
-    this.isAllSelected()
-      ? this.selection.clear()
-      : this.dataSource.data.forEach(row => this.selection.select(row));
+    if (this.isAllSelected()) {
+      this.selection.clear();
+    } else {
+      this.selection.clear(); // 先清空
+      this.dataSource.data.forEach(row => {
+        if (!row.publish) {
+          this.selection.select(row); // 只選未發布的
+        }
+      });
+    }
+  }
+  deleteQuiz(): void {
+    const selectedIds = this.selection.selected.map((row: any) => row.id);
+    const deleteData = {
+      quizIdList: selectedIds
+    };
+    console.log('目前選取的列 ID:', deleteData);
+    this.http.postApi('http://localhost:8080/quiz/delete', deleteData).subscribe({
+      next: (res: any) => {
+        console.log("刪除成功", res);
+      },
+      error: (err) => {
+        console.error(err);
+        alert("伺服器連線錯誤");
+      }
+    });
+  }
+  updateQuiz(): void {
+    const selectedIds = this.selection.selected.map((row: any) => row.id);
+    this.http.getApi('http://localhost:8080/quiz/list').
+      subscribe((res: any) => {
+        this.findData = res.quizList.find((item: { id: any; }) => item.id === selectedIds[0]);
+        console.log(this.findData);
+      })
+      this.http.getApi(`http://localhost:8080/quiz/question_list?quizId=${selectedIds[0]}`).
+      subscribe((res: any) => {
+        this.findQuestion = res.questionVoList;
+        console.log(this.findQuestion);
+      })
+      setTimeout(() => this.updateFindData(), 500);
+
   }
 
-  goToQuiz(id:number){
-    this.router.navigate(['/quiz',id]);
+  updateFindData(){
+    const selectedIds = this.selection.selected.map((row: any) => row.id);
+    this.answerDataService.addQuestion({
+      title: this.findData.title,
+      startDate: this.findData.startDate,
+      endDate: this.findData.endDate,
+      description: this.findData.description,
+      publish: this.findData.publish,
+      options: []
+    });
+    this.answerDataService.questionDataPreview = this.findQuestion;
+    console.log(this.answerDataService.inquesData);
+
+    this.router.navigate(['/backstage', selectedIds]);
   }
+
+  goToQuiz(id: number) {
+    this.router.navigate(['/quiz', id]);
+  }
+  goToResult(id: number) {
+    if (this.admincreate == false) {
+      const url = this.router.serializeUrl(this.router.createUrlTree(['/statistic', id]));
+      window.open(url, '_blank');
+    } else {
+      const url = this.router.serializeUrl(this.router.createUrlTree(['/statistic', id]));
+      window.open(url, '_blank');
+      
+      this.router.navigate(['/userstatistic', id], { queryParams: { tab: 2 } });
+
+    }
+  }
+
+  searchByDate() {
+    if (this.answerDataService.isAdminLogin()) {
+      const data = {
+        title: this.inputData,
+        startDate: this.chooseDate,
+        endDate: this.endDate,
+        getPublish: false
+      }
+      this.http.postApi("http://localhost:8080/quiz/search", data)
+        .subscribe((res: any) => {
+          this.quizList = res.quizList.map((quiz: any) => {
+            const now = new Date();
+            const start = new Date(quiz.startDate);
+            const end = new Date(quiz.endDate);
+            // 判斷現在時間是否在區間內
+            let status: string;
+            if (now < start) {
+              status = '未開始';
+            } else if (now > end) {
+              status = '已截止';
+            } else {
+              status = '進行中';
+            }
+            return {
+              ...quiz,
+              status: status  // 新增 status 屬性
+            };
+          });
+          this.dataSource.data = this.quizList;
+        });
+    } else {
+      const data = {
+        title: this.inputData,
+        startDate: this.chooseDate,
+        endDate: this.endDate,
+        getPublish: true
+      }
+      this.http.postApi("http://localhost:8080/quiz/search", data)
+        .subscribe((res: any) => {
+          this.quizList = res.quizList.map((quiz: any) => {
+            const now = new Date();
+            const start = new Date(quiz.startDate);
+            const end = new Date(quiz.endDate);
+            // 判斷現在時間是否在區間內
+            let status: string;
+            if (now < start) {
+              status = '未開始';
+            } else if (now > end) {
+              status = '已截止';
+            } else {
+              status = '進行中';
+            }
+            return {
+              ...quiz,
+              status: status  // 新增 status 屬性
+            };
+          });
+          this.dataSource.data = this.quizList;
+        });
+    }
+
+  }
+
 }
 
-// ---------------- 介面與假資料 ----------------
 
-// 表格每列的資料結構定義
-
-
-// 假資料：化學元素表
-// const ELEMENT_DATA: QuizFromDb[] = [
-//   { position: 1, name: 'Hydrogen', height: 180, weight: 1.0079, symbol: 'H' },
-//   { position: 2, name: 'Helium', height: 180, weight: 4.0026, symbol: 'He' },
-
-// ];

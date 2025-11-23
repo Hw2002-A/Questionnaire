@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnswerDataService } from '../@service/answer-data.service';
 import { HttpService } from '../@http-service/http.service';
+import { SimpleDialogComponent } from '../shared/simple-dialog/simple-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -15,17 +17,19 @@ export class FrontComponent {
   questionData: Array<any> = [];
   quizId!: number;
   title!: string;
-  sDate!: string;
-  eDate!: string;
-  explain!: string;
+  startDate!: string;
+  endDate!: string;
+  description!: string;
   userName!: string;
   userPhone!: string;
   userEmail!: string;
   userAge!: string;
+
   constructor(private answerDataService: AnswerDataService,
     private router: Router,
     private http: HttpService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) { }
   newquesArray: Array<any> = [];
   // 多選M 單選Q 文字輸入T
@@ -93,42 +97,44 @@ export class FrontComponent {
 
 
   ngOnInit(): void {
+    if(!this.answerDataService.answerDataPreview){
     this.quizId = Number(this.route.snapshot.paramMap.get('id'));
     const selectedQuiz = this.answerDataService.questData.find(q => q.id === this.quizId)!;
     console.log(selectedQuiz);
 
     // 呼叫後端 API 取得該問卷的題目
-    this.http.getApi(`http://localhost:8080/quiz/question_list?quizId=${this.quizId}`).subscribe((res: any) => {
+    this.http.getApi(`http://localhost:8080/quiz/question_list?quizId=${this.quizId}`)
+    .subscribe((res: any) => {
       this.questionData = res.questionVoList;
       this.newquesArray = this.questionData.map(ques => ({
       ...ques,
       Answer: '',
-      radioAnswer: ''
+      radioAnswer: 0
     }));
     console.log(this.newquesArray);
       console.log('載入問卷：', this.questionData);
     });
 
     this.title = selectedQuiz.title;
-    this.sDate = selectedQuiz.startDate;
-    this.eDate = selectedQuiz.endDate;
-    this.explain = selectedQuiz.description;
+    this.startDate = selectedQuiz.startDate;
+    this.endDate = selectedQuiz.endDate;
+    this.description = selectedQuiz.description;
 
-    // if(!this.answerDataService.questData){
 
-    // }
 
-    // else{
-    //   this.title = this.answerDataService.questData.title;
-    //   this.sDate = this.answerDataService.questData.sDate;
-    //   this.eDate = this.answerDataService.questData.eDate;
-    //   this.explain = this.answerDataService.questData.explain;
-    //   this.userName = this.answerDataService.questData.userName;
-    //   this.userAge = this.answerDataService.questData.userAge;
-    //   this.userEmail = this.answerDataService.questData.userEmail;
-    //   this.userPhone = this.answerDataService.questData.userPhone;
-    //   this.newquesArray = this.answerDataService.questData.questArray;
-    // }
+    }
+    else{
+      this.quizId =this.answerDataService.answerDataPreview.quizId;
+      this.title = this.answerDataService.answerDataPreview.title;
+      this.startDate = this.answerDataService.answerDataPreview.startDate;
+      this.endDate = this.answerDataService.answerDataPreview.endDate;
+      this.description = this.answerDataService.answerDataPreview.description;
+      this.userName = this.answerDataService.answerDataPreview.name;
+      this.userAge = this.answerDataService.answerDataPreview.age;
+      this.userEmail = this.answerDataService.answerDataPreview.email;
+      this.userPhone = this.answerDataService.answerDataPreview.phone;
+      this.newquesArray = this.answerDataService.answerDataPreview.answerList;
+    }
   }
 
   tidArray() {
@@ -138,7 +144,7 @@ export class FrontComponent {
     // for(let opsArray of this.newquesArray){
     //   let opts = [];
     //   for(let opt of opsArray.options){
-    //     opts.push({...opt,checkboolean:false});
+    //     opts.push({...opt,checkBoolean:false});
     //   }
     //   opsArray.options =opts;
     //   }
@@ -146,50 +152,51 @@ export class FrontComponent {
 
 
   }
-  // Preview(){
-  //   if(this.checkNeed()){
-  // this.answerDataService.questData ={
-  //   title:this.quest.title,
-  //   sDate:this.quest.sDate,
-  //   eDate:this.quest.eDate,
-  //   explain:this.quest.explain,
-  //   userName:this.userName,
-  //   userAge:this.userAge,
-  //   userEmail:this.userEmail,
-  //   userPhone:this.userPhone,
-  //   questArray:this.newquesArray,
-  // }
-  //  console.log(this.answerDataService.questData);
-  //  this.router.navigate(['/preview']);
-  // };
-
+  Preview(){
+    if(this.checkNeed()){
+  this.answerDataService.answerDataPreview ={
+    quizId:this.quizId,
+    title:this.title,
+    startDate:this.startDate,
+    endDate:this.endDate,
+    description:this.description,
+    name:this.userName,
+    age:this.userAge,
+    email:this.userEmail,
+    phone:this.userPhone,
+    answerList:this.newquesArray,
+  }
+   console.log(this.answerDataService.answerDataPreview);
+   this.router.navigate(['/preview']);
+  };
+  }
   // }
   checkNeed(): boolean {
-    if (!this.userName || !this.userPhone) {
-      alert('請輸入完全')
+    if (!this.userName || !this.userPhone || this.userEmail ) {
+      this.showAlert('請輸入完全');
       return false;
     };
     for (let ques of this.newquesArray) {
-      if (ques.need) {
+      if (ques.required) {
         if (ques.type == 'M') {
           let check = false;
-          for (let ops of ques.options) {
-            if (ops.checkboolean) {
+          for (let ops of ques.optionsList) {
+            if (ops.checkBoolean) {
               check = true;
             }
           }
           if (!check) {
-            alert('請輸入完全')
+            this.showAlert('請輸入完全');
             return false;
           }
-        } else if (ques.type == 'Q') {
+        } else if (ques.type == 'S') {
           if (!ques.radioAnswer) {
-            alert('請輸入完全')
+            this.showAlert('請輸入完全');
             return false;
           }
         } else if (ques.type == 'T') {
           if (!ques.Answer) {
-            alert('請輸入完全')
+            this.showAlert('請輸入完全');
             return false;
           }
         }
@@ -197,6 +204,16 @@ export class FrontComponent {
     }
     return true;
   }
+  showAlert(message: string, title?: string) {
+  this.dialog.open(SimpleDialogComponent, {
+    width: '420px',
+    data: {
+      title: title || '提示',
+      message,
+      type: 'info'
+    }
+  });
+}
 }
 
 

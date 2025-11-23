@@ -1,4 +1,5 @@
 export interface Quiz {
+  id?:number;
   title: string,
   description: string,
   startDate: string,
@@ -20,7 +21,18 @@ export interface QuizFromDb{
   description: string,
   startDate: string,
   endDate: string,
+  status:string,
   publish: boolean
 }
 
+export interface Preview{
+  quiz_id:number,
+  question_id:number;
+}
 
+
+export interface feedback{
+ name:string,
+ fillinDate:string,
+
+}

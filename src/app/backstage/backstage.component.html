@@ -1,83 +1,127 @@
-<button routerLink = "/list">返回</button>
+
+<button routerLink="/list" class="round-btn"><mat-icon>home</mat-icon></button>
 <div class="divStyle">
-<mat-tab-group [(selectedIndex)]="tabNumber">
-  <mat-tab label="問卷">
-  <div class="divContent" >
- <div class="divName" >
-  <label>問卷名稱:</label>
-  <input type="text" [(ngModel)]="questName">
-  </div>
- <div class="divName" >
-  <label>問卷說明:</label>
-  <textarea [(ngModel)]="questExplan"></textarea>
-</div>
- <div class="divName" >
-  <label>開始時間:</label>
-  <input type="date" [(ngModel)]="chooseDate">
-</div>
- <div class="divName" >
-  <label>結束時間:</label>
-  <input type="date" [(ngModel)]="endDate" min={{chooseDate}}>
-  </div>
-  <div class="divName" >
-  <label>是否發布</label>
-  <input type="radio" [value]="true" name="needRadio" [(ngModel)]="publish">是
-  <input type="radio" [value]="false" name="needRadio" [(ngModel)]="publish">否
-  </div>
-</div>
-<button (click)="nextTab()">下一步</button>
-  </mat-tab>
-
-  <mat-tab label="問卷題目">
-    <div class="divName">
-      <label>選擇問題類型</label>
-      <div>
-        <button class="quesbtn" (click)="addRow()">單選</button>
-        <button class="quesbtn">多選</button>
-        <button class="quesbtn">簡答題</button>
-        <button (click)="deleteSelected()">刪除</button>
+  <mat-tab-group [(selectedIndex)]="tabNumber">
+    <mat-tab label="問卷" [disabled]="isPreview">
+      <div class="divContent">
+        <div class="divName">
+          <label>問卷名稱:</label>
+          <input type="text" [(ngModel)]="questName">
+        </div>
+        <div class="divName">
+          <label>問卷說明:</label>
+          <textarea [(ngModel)]="questExplan"></textarea>
+        </div>
+        <div class="divName">
+          <label>開始時間:</label>
+          <input type="date" [(ngModel)]="chooseDate">
+        </div>
+        <div class="divName">
+          <label>結束時間:</label>
+          <input type="date" [(ngModel)]="endDate" min={{chooseDate}}>
+        </div>
+        <div class="divName">
+          <label>是否發布</label>
+          <input type="radio" [value]="true" name="needRadio" [(ngModel)]="publish">是
+          <input type="radio" [value]="false" name="needRadio" [(ngModel)]="publish">否
+        </div>
       </div>
+      <button (click)="nextTab()">下一步</button>
+    </mat-tab>
+
+    <mat-tab label="問卷題目" [disabled]="isPreview">
+      <div class="divName">
+        <label>選擇問題類型</label>
+        <div>
+          <button class="quesbtn" (click)="addRow()">新增題目</button>
+          <button (click)=" deleteSelected()">刪除</button>
+        </div>
         <hr>
-    </div>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="select">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let row">
-      <mat-checkbox (click)="$event.stopPropagation()"
-                    (change)="$event ? selection.toggle(row) : null"
-                    [checked]="selection.isSelected(row)">
-      </mat-checkbox>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="questId">
-    <th mat-header-cell *matHeaderCellDef> 題號 </th>
-    <td mat-cell *matCellDef="let element"> {{element.questId}} </td>
-  </ng-container>
-  <ng-container matColumnDef="questName">
-    <th mat-header-cell *matHeaderCellDef> 題目 </th>
-    <td mat-cell *matCellDef="let element"> {{element.questName}} </td>
-  </ng-container>
-  <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef> 類型 </th>
-    <td mat-cell *matCellDef="let element"> {{element.type}} </td>
-  </ng-container>
-  <ng-container matColumnDef="edit">
-    <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element" (click) = "showDialog()"> {{element.edit}} </td>
-  </ng-container>
-
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-</table>
-<button class="quesbtn" (click)="submitAllQuestions()">上傳表單</button>
-  </mat-tab>
+      </div>
 
 
 
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)=" selection.toggle(row) "
+              [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="questionId">
+          <th mat-header-cell *matHeaderCellDef> 題號 </th>
+          <td mat-cell *matCellDef="let element"> {{element.questionId}} </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> 題目 </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef> 類型 </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="primary" (click)="showDialog(element.questionId)">
+              編輯
+            </button>
+          </td>
+        </ng-container>
 
-  <mat-tab label="問卷回饋"> 3 </mat-tab>
-   <mat-tab label="統計"> 4 </mat-tab>
-</mat-tab-group>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+      @if(isUpdate == true){
+      <button class="quesbtn" (click)="updateAllQuestions()">更新問卷</button>
+      }@else{
+      <button class="quesbtn" (click)="submitAllQuestions()">上傳問卷</button>
+      }
+    </mat-tab>
+
+
+
+
+    <mat-tab label="問卷回饋" [disabled]="!isPreview">
+
+      <table mat-table [dataSource]="feedbackSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="number">
+          <th mat-header-cell *matHeaderCellDef>序號</th>
+          <td mat-cell *matCellDef="let element">{{ element.number }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>姓名</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fillinDate">
+          <th mat-header-cell *matHeaderCellDef>填寫日期</th>
+          <td mat-cell *matCellDef="let element">{{ element.fillinDate }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>觀看回覆</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="primary" (click)="goToResult(element.email)">
+              查看結果
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="feedbackColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns:feedbackColumns ;"></tr>
+      </table>
+
+
+    </mat-tab>
+
+    <!-- <mat-tab label="統計" [disabled]="!isPreview">
+
+    </mat-tab> -->
+  </mat-tab-group>
 </div>

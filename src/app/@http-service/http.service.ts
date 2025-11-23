@@ -8,7 +8,9 @@ import { Quiz } from '../@interface/interface.service';
 })
 export class HttpService {
 apiUrl = "http://localhost:8080/quiz";
-  constructor(private http:HttpClient, private answerDataService:AnswerDataService) { }
+  constructor(private http:HttpClient,
+    private answerDataService:AnswerDataService,
+  ) { }
 
   // 新增一個共用的方法 名稱為getApi
   // 並且呼叫方法時需要輸入一個值(api的url)
@@ -48,6 +50,23 @@ apiUrl = "http://localhost:8080/quiz";
     console.log(requestBody);
 
     return this.http.post("http://localhost:8080/quiz/create", requestBody);
+  }
+
+  postUpdate(data:Array<Quiz>){
+    const requestBody = {
+    quiz: {
+      id:this.answerDataService.inquesData[0].id,
+      title: this.answerDataService.inquesData[0].title,
+      description: this.answerDataService.inquesData[0].description,
+      startDate: this.answerDataService.inquesData[0].startDate,
+      endDate: this.answerDataService.inquesData[0].endDate,
+      publish: this.answerDataService.inquesData[0].publish
+    },
+    questionVoList: this.answerDataService.questionDataPreview
+  };
+    console.log(requestBody);
+
+    return this.http.post("http://localhost:8080/quiz/update", requestBody);
   }
 
 

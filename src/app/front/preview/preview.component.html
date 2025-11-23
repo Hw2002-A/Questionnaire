@@ -1,47 +1,52 @@
 <div class="divA">
 <div class="divName">
-<h1>{{quest.title}}</h1>
+<h1>{{quest?.title}}</h1>
 <hr>
 <div class="divName">
-<label>{{quest.sDate}}~{{quest.eDate}}</label>
+<label>{{quest?.startDate}}~{{quest?.endDate}}</label>
 </div>
 <div>
-<h2>範例說明: {{quest.explain}}</h2>
+<h2>範例說明: {{quest?.description}}</h2>
 </div>
 
 <div class="divName">
-<label>姓名:{{quest.userName}}</label>
+<label>姓名:{{quest?.name}}</label>
 </div>
 <div class="divName">
-<label>手機:{{quest.userPhone}}</label>
+<label>手機:{{quest?.phone}}</label>
 </div>
 <div class="divName">
-<label>Email:{{quest.userEmail}}</label>
+<label>Email:{{quest?.email}}</label>
 </div>
 <div class="divName">
-<label>年齡:{{quest.userAge}}</label>
+<label>年齡:{{quest?.age}}</label>
 </div>
   <div>
   <ol>
 @for(answer of newquesArray ; track $index){
     <li>
       <h3>
-     {{answer.questName}}
+     {{answer?.name}}
         </h3>
     </li>
-    @for(op of answer.options ; track $index){
-      @if(op.checkboolean){
-           <label> {{op.optionName}}</label>
+    @for(op of answer?.optionsList ; track $index){
+      @if(op?.checkBoolean){
+           <label> {{op?.optionName}}</label>
           }
-          @if(answer.radioAnswer == op.code){
-          <label>{{op.optionName}}</label>
+          @if(answer?.radioAnswer == op?.code){
+          <label>{{op?.optionName}}</label>
           }
 
     }
-     @if (answer.type == 'T'){
-          <label>{{answer.Answer}}</label>
+     @if (answer?.type == 'T'){
+          <label>{{answer?.textAnswer}}</label>
         }
   }
  </ol>
 </div>
+@if(!preview){
+<button (click)="putButton()">提交</button>
+<button (click)="cancelButton()">取消</button>
+}
+
 </div>

@@ -3,10 +3,10 @@
 <h1>{{title}}</h1>
 <hr>
 <div class="divName">
-<label>{{sDate}}~{{eDate}}</label>
+<label>{{startDate}}~{{endDate}}</label>
 </div>
 <div>
-<h2>範例說明: {{explain}}</h2>
+<h2>範例說明: {{description}}</h2>
 </div>
 
 <div class="divName">
@@ -19,29 +19,30 @@
 <label>Email:</label><input type="text" [(ngModel)]="userEmail">
 </div>
 <div class="divName">
-<label>年齡:</label><input type="text" [(ngModel)]="userAge">
+<label>年齡:</label><input type="number" [(ngModel)]="userAge">
 </div>
 <div>
   <ol>
 @for(answer of newquesArray ; track $index){
     <li>
       <h3>
-     {{answer.questName}}
-     @if(answer.need){
+     {{answer.name}}
+     @if(answer.required){
       <span style="color: brown;">*</span>
      }
         </h3>
     </li>
       @if(answer.type == "M"){
-        @for(op of answer.options ; track $index){
-          <input type="checkbox" [(ngModel)] = 'op.checkboolean'>
+        @for(op of answer.optionsList ; track $index){
+          <input type="checkbox" [(ngModel)] = 'op.checkBoolean'>
           <label>{{op.optionName}}</label>
           <br>
         }
       }
-      @if(answer.type == "Q"){
-         @for(op of answer.options ; track $index){
-          <input type="radio" name="{{answer.questId}}" value="{{op.code}}" [(ngModel)] = "answer.radioAnswer">
+      @if(answer.type == "S"){
+         @for(op of answer.optionsList ; track $index){
+          <input type="radio" name="{{answer.questionId}}" value="{{op.code}}"
+          [(ngModel)] = "answer.radioAnswer">
           <label>{{op.optionName}}</label>
           <br>
         }
@@ -57,5 +58,5 @@
  </ol>
 </div>
 </div>
-<!-- <button (click)="Preview()">預覽</button> -->
+<button (click)="Preview()">預覽</button>
 
